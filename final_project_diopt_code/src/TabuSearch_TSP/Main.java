@@ -1,9 +1,7 @@
-package TabuSearch_GA;
+package TabuSearch_TSP;
 
-import TabuSearch_GA.objects.ConcentricTabuSearch;
-import TabuSearch_GA.objects.TabuSearch;
-
-import java.util.Random;
+import TabuSearch_TSP.objects.ConcentricTabuSearch;
+import TabuSearch_TSP.objects.TabuSearch;
 
 public class Main {
     public static void main (String[] args) {

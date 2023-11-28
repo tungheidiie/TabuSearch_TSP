@@ -1,6 +1,6 @@
-package TabuSearch_GA.display;
+package TabuSearch_TSP.display;
 
-import TabuSearch_GA.objects.City;
+import TabuSearch_TSP.objects.City;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;

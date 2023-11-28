@@ -1,6 +1,6 @@
-package TabuSearch_GA.data;
+package TabuSearch_TSP.data;
 
-import TabuSearch_GA.objects.City;
+import TabuSearch_TSP.objects.City;
 
 import java.io.InputStream;
 

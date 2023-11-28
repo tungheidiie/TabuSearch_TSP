@@ -1,15 +1,16 @@
-package TabuSearch_GA.objects;
+package TabuSearch_TSP.objects;
 
-import TabuSearch_GA.Preset;
-import TabuSearch_GA.display.WindowResults;
-import TabuSearch_GA.display.WindowTabu;
+import TabuSearch_TSP.Preset;
+import TabuSearch_TSP.display.WindowResults;
+import TabuSearch_TSP.display.WindowTabu;
 
 import java.util.*;
 
 /**
- * The Concentric TabuSearch system. This class brings together the entire process of the Concentric Tabu Search.
+ * The TabuSearch system. This class brings together the entire process of the Tabu Search.
+ *
  */
-public class ConcentricTabuSearch {
+public class TabuSearch {
     private final List<City[]> tabuList = new ArrayList<>();
     private int maxIterations;
     private City[] cities;
@@ -19,16 +20,16 @@ public class ConcentricTabuSearch {
     private int increaseTabuSizeInterval;  // The interval for increasing the size of the Tabu list
     private int maxTabuTenure;
     private boolean finished;
-    // Parameters specific to Concentric Tabu Search
-    int concentricRadius = 10;       // Radius for the concentric search
 
-    // Construct the Concentric TabuSearch object with default values.
-    public ConcentricTabuSearch() {
+
+    // Construct the TabuSearch object with default values.
+    public TabuSearch() {
         finished = false;
         executeTime = 0;
-        initialTabuSize = 10;
-        increaseTabuSizeInterval = 15;
-        maxTabuTenure = 30;
+        initialTabuSize = 15;
+        increaseTabuSizeInterval = 1;
+        maxTabuTenure = 5;
+
     }
 
     public void setMaxIterations(int maxIterations) {
@@ -56,22 +57,23 @@ public class ConcentricTabuSearch {
     }
 
     /**
-     * Run the Concentric Tabu Search algorithm.
      * Displays the fittest of each iteration to the screen.
      * and get execute time of algorithm
      */
-    public void run_ConcentricTabuSearch() {
+    public void run_TabuSearch() {
         long startTime = System.currentTimeMillis();
         City[] currentRoute = generateInitialSolution(cities);
-        WindowTabu win = new WindowTabu(currentRoute, "Concentric Tabu Search");
+        WindowTabu win = new WindowTabu(currentRoute, "Tabu Search");
         win.draw(currentRoute);
 
         int currentTabuTenure = initialTabuSize;
         bestRoute = currentRoute.clone();
 
         for (int iteration = 0; iteration < maxIterations; iteration++) {
-            List<City[]> neighbors = generateNeighbors(currentRoute);
 
+            List<City[]> neighbors = generateNeighbors(currentRoute); // generate neighbors of currentRoute
+
+            // get neighbor fittest of currentRoute
             for (City[] neighbor : neighbors) {
                 double neighborDistance = getDistanceRoute(neighbor);
                 if (neighborDistance < getDistanceRoute(bestRoute) && isMoveAllowed(neighbor)) {
@@ -86,17 +88,11 @@ public class ConcentricTabuSearch {
             }
 
             updateTabuList(currentRoute, currentTabuTenure);
-            currentRoute = bestRoute;
+            currentRoute = bestRoute.clone();
 
+            // Using Dynamic Tabu Size
             if (iteration % increaseTabuSizeInterval == 0 && currentTabuTenure < maxTabuTenure) {
                 currentTabuTenure++;
-            }
-
-//             Concentric Search (ring moves)
-            currentRoute = bestRingMove(currentRoute, concentricRadius, win);
-            if (getDistanceRoute(currentRoute) < getDistanceRoute(bestRoute)) {
-                bestRoute = currentRoute.clone();
-                win.draw(bestRoute);
             }
         }
 
@@ -105,65 +101,8 @@ public class ConcentricTabuSearch {
         finished = true;
     }
 
-    private boolean isMoveAllowed(City[] route) {
-        return !isTabu(route) || aspirationCriterion(route);
-    }
-
-    /**
-     * Run the concentric search around the current route.
-     *
-     * @param route  The current route of TSP.
-     * @param radius The radius of the concentric search.
-     * @return The best route found in the concentric search.
-     */
-    private City[] bestRingMove(City[] route, int radius, WindowTabu win) {
-        City[] centerSolution = route.clone();
-        City[] bestSolutionInRing = route.clone();
-        double minDistInRing = getDistanceRoute(bestSolutionInRing);
-
-        for (int i = 0; i < route.length; i++) {
-            for (int j = i + 1; j < route.length && j - i <= radius; j++) {
-                City[] newSolution = ringMove(route, i, j);
-                double newDist = getDistanceRoute(newSolution);
-
-                if (newDist < minDistInRing && isMoveAllowed(newSolution)) {
-                    minDistInRing = newDist;
-                    bestSolutionInRing = newSolution;
-                    win.draw(bestRoute);
-                }
-            }
-        }
-
-        return compareSolutions(centerSolution, bestSolutionInRing, radius);
-    }
-
-    private City[] compareSolutions(City[] center, City[] ring, int radius) {
-        double centerDistance = getDistanceRoute(center);
-        double ringDistance = getDistanceRoute(ring);
-
-        // If the ring solution is better
-        if (ringDistance < centerDistance) {
-            return ring;
-        } else {
-            return center;
-        }
-    }
-
-    private City[] ringMove(City[] route, int i, int j) {
-        City[] newRoute = route.clone();
-        while (i < j) {
-            City temp = newRoute[i];
-            newRoute[i] = newRoute[j];
-            newRoute[j] = temp;
-            i++;
-            j--;
-        }
-        return newRoute;
-    }
-
-
     private void reverseCitiesBetween(City[] route, int i, int j) {
-        // Swap cities at positions i and j
+        // reverse city i & city j
         while (i < j) {
             City temp = route[i];
             route[i] = route[j];
@@ -173,9 +112,12 @@ public class ConcentricTabuSearch {
         }
     }
 
+    private boolean isMoveAllowed(City[] route) {
+        return !isTabu(route) || aspirationCriterion(route);
+    }
+
     /**
      * Checks the aspiration criterion to determine if a solution should be accepted.
-     *
      * @param route current route of TSP
      */
     private boolean aspirationCriterion(City[] route) {
@@ -199,7 +141,6 @@ public class ConcentricTabuSearch {
 
     /**
      * Using 2-opt generate neighbors of currentRoute
-     *
      * @param currentRoute current route of TSP
      * @return neighbors of currentRoute
      */
@@ -224,7 +165,6 @@ public class ConcentricTabuSearch {
     /**
      * Add new route to Tabu list
      * Remove the oldest solution in  the size of the tabu list exceeds the specified limit.
-     *
      * @param tabuSize size of tabu list
      */
     private void updateTabuList(City[] route, int tabuSize) {
@@ -247,30 +187,30 @@ public class ConcentricTabuSearch {
 
     public City[] getBestRoute() {
         if (!finished) {
-            throw new IllegalStateException("Concentric Tabu search was not initiated.");
+            throw new IllegalStateException("Tabu search was not initiated.");
         }
         return bestRoute;
     }
 
     public long getExecuteTime() {
         if (!finished) {
-            throw new IllegalStateException("Concentric Tabu search was not initiated.");
+            throw new IllegalStateException("Tabu search was not initiated.");
         }
         return executeTime;
     }
 
     public int getBestDistanceRoute() {
         if (!finished) {
-            throw new IllegalStateException("Concentric Tabu search was not initiated.");
+            throw new IllegalStateException("Tabu search was not initiated.");
         }
         return getDistanceRoute(bestRoute);
     }
 
     public void printResults() {
         if (!finished) {
-            throw new IllegalStateException("Concentric Tabu search is not initiated.");
+            throw new IllegalStateException("Tabu search is not initiated.");
         }
-        System.out.println("Concentric Tabu search");
+        System.out.println("Tabu search");
         System.out.println("Best route: " + Arrays.toString(getBestRoute()));
         System.out.println("Best distance route: " + getBestDistanceRoute());
         System.out.println("Execute time: " + getExecuteTime() + " ms");
@@ -281,10 +221,10 @@ public class ConcentricTabuSearch {
      */
     public void showVisualResults() {
         if (!finished) {
-            throw new IllegalStateException("Concentric Tabu search is not initiated.");
+            throw new IllegalStateException("Tabu search is not initiated.");
         }
         StringBuilder results = new StringBuilder();
-        results.append("Concentric Tabu search\n");
+        results.append("Tabu search");
         results.append("Number of cities: ").append(getBestRoute().length).append("\n");
         results.append("\nBest distance route: ").append(getBestDistanceRoute()).append("\n");
         results.append("\nBest route:\n ");

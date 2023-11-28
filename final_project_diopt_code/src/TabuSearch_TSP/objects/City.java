@@ -1,4 +1,4 @@
-package TabuSearch_GA.objects;
+package TabuSearch_TSP.objects;
 
 import java.util.Random;
 

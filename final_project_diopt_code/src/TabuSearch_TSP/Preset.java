@@ -1,8 +1,8 @@
-package TabuSearch_GA;
+package TabuSearch_TSP;
 
-import TabuSearch_GA.data.ImportData;
-import TabuSearch_GA.objects.ConcentricTabuSearch;
-import TabuSearch_GA.objects.TabuSearch;
+import TabuSearch_TSP.data.ImportData;
+import TabuSearch_TSP.objects.ConcentricTabuSearch;
+import TabuSearch_TSP.objects.TabuSearch;
 
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package TabuSearch_GA.display;
+package TabuSearch_TSP.display;
 
 import javax.swing.*;
 import java.awt.*;
