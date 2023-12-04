@@ -7,8 +7,9 @@ import java.util.Random;
  */
 public class City {
 
-    private String name;
-    private int x, y;
+    private final String name;
+    private final int x;
+    private final int y;
 
     /**
      * Constructs the City.

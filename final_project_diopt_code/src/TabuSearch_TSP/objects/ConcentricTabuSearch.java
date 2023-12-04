@@ -20,7 +20,7 @@ public class ConcentricTabuSearch {
     private int maxTabuTenure;
     private boolean finished;
     // Parameters specific to Concentric Tabu Search
-    int concentricRadius = 10;       // Radius for the concentric search
+    int concentricRadius = 5;       // Radius for the concentric search
 
     // Construct the Concentric TabuSearch object with default values.
     public ConcentricTabuSearch() {
@@ -88,16 +88,18 @@ public class ConcentricTabuSearch {
             updateTabuList(currentRoute, currentTabuTenure);
             currentRoute = bestRoute;
 
-            if (iteration % increaseTabuSizeInterval == 0 && currentTabuTenure < maxTabuTenure) {
-                currentTabuTenure++;
-            }
-
 //             Concentric Search (ring moves)
-            currentRoute = bestRingMove(currentRoute, concentricRadius, win);
+            currentRoute = performRingMove(currentRoute, concentricRadius, win);
             if (getDistanceRoute(currentRoute) < getDistanceRoute(bestRoute)) {
                 bestRoute = currentRoute.clone();
                 win.draw(bestRoute);
             }
+
+            // Using Dynamic Tabu Size
+            if (iteration % increaseTabuSizeInterval == 0 && currentTabuTenure < maxTabuTenure) {
+                currentTabuTenure++;
+            }
+
         }
 
         long endTime = System.currentTimeMillis();
@@ -116,7 +118,7 @@ public class ConcentricTabuSearch {
      * @param radius The radius of the concentric search.
      * @return The best route found in the concentric search.
      */
-    private City[] bestRingMove(City[] route, int radius, WindowTabu win) {
+    private City[] performRingMove(City[] route, int radius, WindowTabu win) {
         City[] centerSolution = route.clone();
         City[] bestSolutionInRing = route.clone();
         double minDistInRing = getDistanceRoute(bestSolutionInRing);
@@ -129,15 +131,15 @@ public class ConcentricTabuSearch {
                 if (newDist < minDistInRing && isMoveAllowed(newSolution)) {
                     minDistInRing = newDist;
                     bestSolutionInRing = newSolution;
-                    win.draw(bestRoute);
+                    win.draw(bestSolutionInRing);
                 }
             }
         }
 
-        return compareSolutions(centerSolution, bestSolutionInRing, radius);
+        return compareSolutions(centerSolution, bestSolutionInRing);
     }
 
-    private City[] compareSolutions(City[] center, City[] ring, int radius) {
+    private City[] compareSolutions(City[] center, City[] ring) {
         double centerDistance = getDistanceRoute(center);
         double ringDistance = getDistanceRoute(ring);
 
@@ -151,13 +153,9 @@ public class ConcentricTabuSearch {
 
     private City[] ringMove(City[] route, int i, int j) {
         City[] newRoute = route.clone();
-        while (i < j) {
             City temp = newRoute[i];
             newRoute[i] = newRoute[j];
             newRoute[j] = temp;
-            i++;
-            j--;
-        }
         return newRoute;
     }
 
