@@ -8,7 +8,6 @@ import java.util.*;
 
 /**
  * The TabuSearch system. This class brings together the entire process of the Tabu Search.
- *
  */
 public class TabuSearch {
     private final List<City[]> tabuList = new ArrayList<>();
@@ -72,23 +71,26 @@ public class TabuSearch {
         for (int iteration = 0; iteration < maxIterations; iteration++) {
 
             List<City[]> neighbors = generateNeighbors(currentRoute); // generate neighbors of currentRoute
-
+            City[] neighborBest = new City[cities.length];
+            int neighborBestDistance = Integer.MAX_VALUE;
             // get neighbor fittest of currentRoute
             for (City[] neighbor : neighbors) {
-                double neighborDistance = getDistanceRoute(neighbor);
-                if (neighborDistance < getDistanceRoute(bestRoute) && isMoveAllowed(neighbor)) {
-                    bestRoute = neighbor;
-                    win.draw(bestRoute);
+                int neighborDistance = getDistanceRoute(neighbor);
+                if (neighborDistance < neighborBestDistance) {
+                    neighborBest = neighbor.clone();
+                    neighborBestDistance = neighborDistance;
                 }
             }
-
-            if (getDistanceRoute(currentRoute) < getDistanceRoute(bestRoute)) {
-                bestRoute = currentRoute.clone();
-                win.draw(bestRoute);
+            if (isMoveAllowed(neighborBest)) {
+                if (neighborBestDistance < getDistanceRoute(bestRoute)) {
+                    bestRoute = neighborBest.clone();
+                    currentRoute = neighborBest.clone();
+                    win.draw(bestRoute);
+                } else {
+                    currentRoute = neighborBest.clone();
+                }
+                updateTabuList(currentRoute, currentTabuTenure);
             }
-
-            updateTabuList(currentRoute, currentTabuTenure);
-            currentRoute = bestRoute.clone();
 
             // Using Dynamic Tabu Size
             if (iteration % increaseTabuSizeInterval == 0 && currentTabuTenure < maxTabuTenure) {
@@ -101,23 +103,13 @@ public class TabuSearch {
         finished = true;
     }
 
-    private void reverseCitiesBetween(City[] route, int i, int j) {
-        // reverse city i & city j
-        while (i < j) {
-            City temp = route[i];
-            route[i] = route[j];
-            route[j] = temp;
-            i++;
-            j--;
-        }
-    }
-
     private boolean isMoveAllowed(City[] route) {
         return !isTabu(route) || aspirationCriterion(route);
     }
 
     /**
      * Checks the aspiration criterion to determine if a solution should be accepted.
+     *
      * @param route current route of TSP
      */
     private boolean aspirationCriterion(City[] route) {
@@ -141,6 +133,7 @@ public class TabuSearch {
 
     /**
      * Using 2-opt generate neighbors of currentRoute
+     *
      * @param currentRoute current route of TSP
      * @return neighbors of currentRoute
      */
@@ -158,6 +151,17 @@ public class TabuSearch {
         return neighbors;
     }
 
+    private void reverseCitiesBetween(City[] route, int i, int j) {
+        // reverse city i & city j
+        while (i < j) {
+            City temp = route[i];
+            route[i] = route[j];
+            route[j] = temp;
+            i++;
+            j--;
+        }
+    }
+
     private boolean isTabu(City[] route) {
         return tabuList.contains(route);
     }
@@ -165,6 +169,7 @@ public class TabuSearch {
     /**
      * Add new route to Tabu list
      * Remove the oldest solution in  the size of the tabu list exceeds the specified limit.
+     *
      * @param tabuSize size of tabu list
      */
     private void updateTabuList(City[] route, int tabuSize) {
@@ -224,7 +229,7 @@ public class TabuSearch {
             throw new IllegalStateException("Tabu search is not initiated.");
         }
         StringBuilder results = new StringBuilder();
-        results.append("Tabu search");
+        results.append("Tabu search").append("\n");
         results.append("Number of cities: ").append(getBestRoute().length).append("\n");
         results.append("\nBest distance route: ").append(getBestDistanceRoute()).append("\n");
         results.append("\nBest route:\n ");

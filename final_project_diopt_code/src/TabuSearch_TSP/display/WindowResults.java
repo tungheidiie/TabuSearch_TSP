@@ -29,7 +29,7 @@ public class WindowResults extends JFrame {
         setLocation(1020, 15);
         setResizable(false);
         pack();
-        setTitle("Genetic Algorithm Results");
+        setTitle("Tabu search Results");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
     }

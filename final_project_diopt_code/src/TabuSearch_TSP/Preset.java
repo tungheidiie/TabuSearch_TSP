@@ -1,7 +1,7 @@
 package TabuSearch_TSP;
 
 import TabuSearch_TSP.data.ImportData;
-import TabuSearch_TSP.objects.ConcentricTabuSearch;
+
 import TabuSearch_TSP.objects.TabuSearch;
 
 import java.util.Random;
@@ -38,29 +38,5 @@ public class Preset {
             tabuSearch.setMaxIterations(1000);
         }
         return tabuSearch;
-    }
-
-    /**
-     * Gets a default Concentric TabuSearch instance with preset configurations.
-     *
-     * @return A Concentric TabuSearch instance with default configurations.
-     */
-    public static ConcentricTabuSearch getDefault_ConcentricTS() {
-        ConcentricTabuSearch concentricTS= new ConcentricTabuSearch();
-        concentricTS.setCities(ImportData.getCities());
-        concentricTS.setMaxTabuTenure(ImportData.getCities().length / 3);
-        concentricTS.setInitialTabuSize(ImportData.getCities().length / 10);
-        concentricTS.setIncreaseTabuSizeInterval(30);
-
-        // auto change max iterations for tabu_search
-        if (ImportData.getCities().length <= 180) {
-            concentricTS.setMaxIterations(500);
-        } else if (ImportData.getCities().length > 180 && ImportData.getCities().length <= 400) {
-            concentricTS.setMaxIterations(700);
-        } else {
-            concentricTS.setMaxIterations(1000);
-        }
-
-        return concentricTS;
     }
 }

@@ -131,7 +131,7 @@ public class WindowTabu extends JFrame {
                 graphics.fillOval(x, y, CITY_SIZE, CITY_SIZE);
                 // Set the font size
                 Font originalFont = graphics.getFont();
-                Font newFont = originalFont.deriveFont(14.0f); // Adjust the font size (10.0f is just an example)
+                Font newFont = originalFont.deriveFont(10.0f); // Adjust the font size (10.0f is just an example)
                 graphics.setFont(newFont);
                 int fontOffset = getFontMetrics(graphics.getFont()).stringWidth(c.getName())/2-2;
                 graphics.drawString(c.getName(), x-fontOffset, y-2);
