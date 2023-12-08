@@ -25,18 +25,10 @@ public class Preset {
 
         TabuSearch tabuSearch = new TabuSearch();
         tabuSearch.setCities(ImportData.getCities());
-        tabuSearch.setMaxTabuTenure(ImportData.getCities().length / 3);
-        tabuSearch.setInitialTabuSize(ImportData.getCities().length / 10);
-        tabuSearch.setIncreaseTabuSizeInterval(30);
-
-        // auto change max iterations for tabu_search
-        if (ImportData.getCities().length <= 180) {
-            tabuSearch.setMaxIterations(500);
-        } else if (ImportData.getCities().length > 180 && ImportData.getCities().length <= 400) {
-            tabuSearch.setMaxIterations(700);
-        } else {
-            tabuSearch.setMaxIterations(1000);
-        }
+        tabuSearch.setMaxTabuTenure(ImportData.getCities().length);
+        tabuSearch.setInitialTabuSize(ImportData.getCities().length / 5);
+        tabuSearch.setIncreaseTabuSizeInterval(10);
+        tabuSearch.setMaxIterations(800);
         return tabuSearch;
     }
 }

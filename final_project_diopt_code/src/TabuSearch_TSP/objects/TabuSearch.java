@@ -71,26 +71,21 @@ public class TabuSearch {
         for (int iteration = 0; iteration < maxIterations; iteration++) {
 
             List<City[]> neighbors = generateNeighbors(currentRoute); // generate neighbors of currentRoute
-            City[] neighborBest = new City[cities.length];
-            int neighborBestDistance = Integer.MAX_VALUE;
+
             // get neighbor fittest of currentRoute
             for (City[] neighbor : neighbors) {
                 int neighborDistance = getDistanceRoute(neighbor);
-                if (neighborDistance < neighborBestDistance) {
-                    neighborBest = neighbor.clone();
-                    neighborBestDistance = neighborDistance;
+                if (neighborDistance < getDistanceRoute(currentRoute) && isMoveAllowed(neighbor)) {
+                    currentRoute = neighbor.clone();
                 }
             }
-            if (isMoveAllowed(neighborBest)) {
-                if (neighborBestDistance < getDistanceRoute(bestRoute)) {
-                    bestRoute = neighborBest.clone();
-                    currentRoute = neighborBest.clone();
-                    win.draw(bestRoute);
-                } else {
-                    currentRoute = neighborBest.clone();
-                }
-                updateTabuList(currentRoute, currentTabuTenure);
+
+            if (getDistanceRoute(currentRoute) < getDistanceRoute(bestRoute)) {
+                bestRoute = currentRoute.clone();
+                win.draw(bestRoute);
             }
+
+            updateTabuList(currentRoute, currentTabuTenure);
 
             // Using Dynamic Tabu Size
             if (iteration % increaseTabuSizeInterval == 0 && currentTabuTenure < maxTabuTenure) {
