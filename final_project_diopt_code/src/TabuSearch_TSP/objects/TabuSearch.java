@@ -224,9 +224,10 @@ public class TabuSearch {
             throw new IllegalStateException("Tabu search is not initiated.");
         }
         StringBuilder results = new StringBuilder();
-        results.append("Tabu search").append("\n");
+        results.append("Tabu search").append("\n\n");
         results.append("Number of cities: ").append(getBestRoute().length).append("\n");
-        results.append("\nBest distance route: ").append(getBestDistanceRoute()).append("\n");
+        results.append("Best distance route: ").append(getBestDistanceRoute()).append("\n");
+        results.append("Run time: ").append(executeTime).append(" ms");
         results.append("\nBest route:\n ");
         for (City city : getBestRoute()) {
             results.append(city.getName()).append("  ");
