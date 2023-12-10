@@ -25,7 +25,7 @@ public class Preset {
 
         TabuSearch tabuSearch = new TabuSearch();
         tabuSearch.setCities(ImportData.getCities());
-        tabuSearch.setMaxTabuTenure(ImportData.getCities().length);
+        tabuSearch.setMaxTabuSize(ImportData.getCities().length);
         tabuSearch.setInitialTabuSize(ImportData.getCities().length / 5);
         tabuSearch.setIncreaseTabuSizeInterval(10);
         tabuSearch.setMaxIterations(800);

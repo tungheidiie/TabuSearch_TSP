@@ -17,7 +17,7 @@ public class TabuSearch {
     private long executeTime;
     private int initialTabuSize;
     private int increaseTabuSizeInterval;  // The interval for increasing the size of the Tabu list
-    private int maxTabuTenure;
+    private int maxTabuSize;
     private boolean finished;
 
 
@@ -27,7 +27,7 @@ public class TabuSearch {
         executeTime = 0;
         initialTabuSize = 15;
         increaseTabuSizeInterval = 1;
-        maxTabuTenure = 5;
+        maxTabuSize = 5;
 
     }
 
@@ -51,8 +51,8 @@ public class TabuSearch {
         this.increaseTabuSizeInterval = interval;
     }
 
-    public void setMaxTabuTenure(int maxTabuTenure) {
-        this.maxTabuTenure = maxTabuTenure;
+    public void setMaxTabuSize(int maxTabuSize) {
+        this.maxTabuSize = maxTabuSize;
     }
 
     /**
@@ -65,7 +65,7 @@ public class TabuSearch {
         WindowTabu win = new WindowTabu(currentRoute, "Tabu Search");
         win.draw(currentRoute);
 
-        int currentTabuTenure = initialTabuSize;
+        int currentTabuSize = initialTabuSize;
         bestRoute = currentRoute.clone();
 
         for (int iteration = 0; iteration < maxIterations; iteration++) {
@@ -85,11 +85,11 @@ public class TabuSearch {
                 win.draw(bestRoute);
             }
 
-            updateTabuList(currentRoute, currentTabuTenure);
+            updateTabuList(currentRoute, currentTabuSize);
 
             // Using Dynamic Tabu Size
-            if (iteration % increaseTabuSizeInterval == 0 && currentTabuTenure < maxTabuTenure) {
-                currentTabuTenure++;
+            if (iteration % increaseTabuSizeInterval == 0 && currentTabuSize < maxTabuSize) {
+                currentTabuSize++;
             }
         }
 
