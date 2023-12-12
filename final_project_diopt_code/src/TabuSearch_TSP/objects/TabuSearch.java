@@ -62,10 +62,12 @@ public class TabuSearch {
     public void run_TabuSearch() {
         long startTime = System.currentTimeMillis();
         City[] currentRoute = generateInitialSolution(cities);
+        int currentTabuSize = initialTabuSize;
+        updateTabuList(currentRoute, currentTabuSize);
+
         WindowTabu win = new WindowTabu(currentRoute, "Tabu Search");
         win.draw(currentRoute);
 
-        int currentTabuSize = initialTabuSize;
         bestRoute = currentRoute.clone();
 
         for (int iteration = 0; iteration < maxIterations; iteration++) {
