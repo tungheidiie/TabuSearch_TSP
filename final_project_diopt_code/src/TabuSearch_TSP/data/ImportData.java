@@ -11,7 +11,7 @@ public class ImportData {
 
     public static City[] getCities() {
 
-        String dataSetName = "dataset/d198.tsp";
+        String dataSetName = "dataset/rat575.tsp";
         int startingLine = 6;
 
         String[] lines = read(dataSetName).split("\n");
